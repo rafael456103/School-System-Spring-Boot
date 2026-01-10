@@ -18,22 +18,23 @@ public class SecurityConfig{
     @Autowired
     AuthenticationProvider authenticationProvider;
 
+    //Simple Security Filter Chain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> {authorize
-                        .requestMatchers("/SchoolSystem/api/login",
-                                "SchoolSystem/api/register")
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/SchoolSystem/api/login", "/SchoolSystem/api/register")
                         .permitAll()
-                        .anyRequest().authenticated();
-                })
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .anyRequest()
+                        .authenticated())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider);
         return httpSecurity.build();
     }
 
+    //Password encoder with BCrypt
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
