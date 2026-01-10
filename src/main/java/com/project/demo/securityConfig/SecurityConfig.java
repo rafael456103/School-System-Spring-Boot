@@ -18,7 +18,7 @@ public class SecurityConfig{
     @Autowired
     AuthenticationProvider authenticationProvider;
 
-    //Simple Security Filter Chain  xd
+    //Simple Security Filter Chain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
