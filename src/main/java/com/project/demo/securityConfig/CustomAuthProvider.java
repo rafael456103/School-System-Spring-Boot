@@ -29,35 +29,6 @@ public class CustomAuthProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String email = authentication.getName();
-        String rawPassword = authentication.getCredentials().toString();
-
-        Optional<Student> studentOptional = studentRepository
-                .findByEmail(email);
-        if(studentOptional.isEmpty()){
-            log.warn("El email no esta asociado a ningun estudiante ", email);
-            throw new BadCredentialsException("Estudiante no encontrado");
-        }
-
-        Student student = studentOptional.get();
-        if (passwordEncoder.matches(rawPassword, student.getPassword())){
-            log.warn("La contrasena no coincide",rawPassword);
-            throw new BadCredentialsException("Contrasena incorrecta");
-        }
-
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
-        log.info("Entidad Student autorizada con exito.");
-
-        return UsernamePasswordAuthenticationToken.authenticated(
-                student.getEmail(),
-                null,
-                authorities
-        );
-    }
-    @Override
-    public boolean supports(Class<?> authorize){
-        return UsernamePasswordAuthenticationToken.class
-                .isAssignableFrom(authorize);
+        return null;
     }
 }
