@@ -19,15 +19,13 @@ public class SecurityConfig{
     AuthenticationProvider authenticationProvider;
 
     //Simple Security Filter Chain
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/SchoolSystem/api/login", "/SchoolSystem/api/register")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
+                        .requestMatchers(
+                                "/SchoolSystem/api/login", "/SchoolSystem/api/register")
+                        .permitAll().anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider);
