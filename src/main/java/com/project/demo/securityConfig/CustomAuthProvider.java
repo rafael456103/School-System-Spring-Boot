@@ -8,10 +8,9 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,35 +22,38 @@ import java.util.Optional;
 public class CustomAuthProvider implements AuthenticationProvider {
 
     @Autowired
-    BCryptPasswordEncoder passwordEncoder;
-    @Autowired
     StudentRepository studentRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication){
         String email = authentication.getName();
-        String rawpassword = authentication.getCredentials().toString();
+        String rawPassword = authentication.getCredentials().toString();
 
-        //find email student
         Optional<Student> studentOptional = studentRepository.findByEmail(email);
         if(studentOptional.isEmpty()){
-            log.warn("Email student dont founded");
-            new BadCredentialsException("Email student dont founded");
+            log.warn("this student doesn't founded");
+            throw new BadCredentialsException("Student doesn't founded");
         }
 
         Student student = studentOptional.get();
-        if(passwordEncoder.matches(rawpassword, student.getPassword())){
-            log.warn("Password does not match");
-            new BadCredentialsException("Password does not match");
+        if(!passwordEncoder.matches(rawPassword, student.getPassword())){
+            log.warn("Student password is incorrect");
+            throw new BadCredentialsException("This password is incorrect");
         }
 
+        //Se crea una Lista Tipo GrantedAuthority para guardar las autoridades
         List<GrantedAuthority> authorities = new ArrayList<>();
+        //Se agrega una Autoirzacion simple e la lista con el role de estudiante
         authorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
 
-        return UsernamePasswordAuthenticationToken.authenticated(email, null,authorities);
+        return UsernamePasswordAuthenticationToken
+                .authenticated(email,null,authorities);
     }
     @Override
-    public boolean supports(Class<?> authenticacion){
-        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authenticacion);
+    public boolean supports(Class<?> aClass){
+        return UsernamePasswordAuthenticationToken.class
+                .isAssignableFrom(aClass);
     }
 }
