@@ -6,7 +6,6 @@ import com.project.demo.repository.StudentRepository;
 import com.project.demo.studentDto.StudentLoginDTO;
 import com.project.demo.studentDto.StudentRegisterDTO;
 import com.project.demo.studentDto.StudentResponseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +15,15 @@ import java.util.Optional;
 @Service
 public class StudentServiceImpl implements StudentService{
 
-    @Autowired
-    StudentRepository studentRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+
+    //Inyeccion de dependencias por constructor
+    final StudentRepository studentRepository;
+    final PasswordEncoder passwordEncoder;
+
+    public StudentServiceImpl(StudentRepository studentRepository, PasswordEncoder passwordEncoder){
+        this.studentRepository = studentRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public List<Student> getStudents() {
