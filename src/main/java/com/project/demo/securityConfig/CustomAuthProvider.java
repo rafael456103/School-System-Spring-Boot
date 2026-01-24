@@ -21,10 +21,14 @@ import java.util.Optional;
 @Component
 public class CustomAuthProvider implements AuthenticationProvider {
 
-    @Autowired
-    StudentRepository studentRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    //Inyeccion de Dependencias por Constructor
+    private final StudentRepository studentRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public CustomAuthProvider(StudentRepository studentRepository, PasswordEncoder passwordEncoder){
+        this.studentRepository = studentRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public Authentication authenticate(Authentication authentication){
