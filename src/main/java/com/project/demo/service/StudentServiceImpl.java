@@ -3,9 +3,9 @@ package com.project.demo.service;
 
 import com.project.demo.entity.Student;
 import com.project.demo.repository.StudentRepository;
-import com.project.demo.studentDto.StudentLoginDTO;
-import com.project.demo.studentDto.StudentRegisterDTO;
-import com.project.demo.studentDto.StudentResponseDTO;
+import com.project.demo.dto.studentDTO.StudentLoginDTO;
+import com.project.demo.dto.studentDTO.StudentRegisterDTO;
+import com.project.demo.dto.studentDTO.StudentResponseDTO;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @Service
 public class StudentServiceImpl implements StudentService{
-
 
     //Inyeccion de dependencias por constructor
     final StudentRepository studentRepository;
@@ -54,31 +53,30 @@ public class StudentServiceImpl implements StudentService{
     public Optional<Student> findbyEmail(String email) {
         return studentRepository.findByEmail(email);
     }
+
     @Override
     public StudentResponseDTO registerDTO(StudentRegisterDTO studentRegisterDTO){
-        if (studentRepository.findByEmail(studentRegisterDTO.getEmail()).isPresent()){
-            throw new RuntimeException("El email ingresado ya existe");
+        //Verificar si existe el estudiante
+        if(studentRepository.findByEmail(studentRegisterDTO.getEmail()).isPresent()){
+            throw new RuntimeException("The student already exist");
         }
-
-        Student student = Student.builder()
+        //Guardar al estudiante
+        Student saved = studentRepository.save(Student.builder()
                 .name(studentRegisterDTO.getName())
-                .password(passwordEncoder.encode(studentRegisterDTO.getPassword()))
                 .university(studentRegisterDTO.getUniversity())
-                .course(studentRegisterDTO.getCourse())
                 .email(studentRegisterDTO.getEmail())
-                .build();
+                .course(studentRegisterDTO.getCourse())
+                .password(passwordEncoder.encode(
+                        studentRegisterDTO.getPassword())).build());
 
-        Student saved = studentRepository.save(student);
-
+        //Retornar la entidad solo con los datos indispensables
         return StudentResponseDTO.builder()
-                .id(saved.getId())
                 .name(saved.getName())
+                .email(saved.getEmail())
                 .university(saved.getUniversity())
                 .course(saved.getCourse())
-                .email(saved.getEmail())
-                .build();
+                .id(saved.getId()).build();
     }
-
     @Override
     public StudentResponseDTO loginDTO(StudentLoginDTO studentLoginDTO){
         //verificar y crear objeto Estudiante del email proporcionado
