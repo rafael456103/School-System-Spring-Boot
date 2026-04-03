@@ -2,9 +2,9 @@ package com.project.demo.controller;
 
 import com.project.demo.entity.Student;
 import com.project.demo.service.StudentService;
-import com.project.demo.studentDto.StudentLoginDTO;
-import com.project.demo.studentDto.StudentRegisterDTO;
-import com.project.demo.studentDto.StudentResponseDTO;
+import com.project.demo.dto.studentDTO.StudentLoginDTO;
+import com.project.demo.dto.studentDTO.StudentRegisterDTO;
+import com.project.demo.dto.studentDTO.StudentResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,7 +79,7 @@ public class StudentController {
         }
     }
     @PostMapping("/login")
-    public ResponseEntity<StudentResponseDTO> loginStudent(@Valid @RequestBody StudentLoginDTO studentLoginDTO){
+    public ResponseEntity<?> loginStudent(@Valid @RequestBody StudentLoginDTO studentLoginDTO){
         try {
             return ResponseEntity.status(HttpStatus.ACCEPTED)
                     .body(studentService.loginDTO(studentLoginDTO));
@@ -87,18 +87,20 @@ public class StudentController {
             return ResponseEntity.badRequest().build();
 
         }catch (Exception e){
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.internalServerError().body("Error: " + e);
         }
     }
     @PostMapping("/register")
-    public ResponseEntity<StudentResponseDTO> registerStudent(@Valid @RequestBody StudentRegisterDTO studentRegisterDTO){
+    public ResponseEntity<?> registerStudent(@Valid @RequestBody StudentRegisterDTO studentRegisterDTO){
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(studentService.registerDTO(studentRegisterDTO));
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().build();
+        } catch (RuntimeException e) {
+            // Esto te diría "The student already exist" o errores de validación
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
-            return  ResponseEntity.internalServerError().build();
+            // Esto te mostrará el error de SQL o NullPointer en Postman
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
 }
