@@ -1,9 +1,9 @@
 package com.project.demo.service;
 
 import com.project.demo.entity.Student;
-import com.project.demo.studentDto.StudentLoginDTO;
-import com.project.demo.studentDto.StudentRegisterDTO;
-import com.project.demo.studentDto.StudentResponseDTO;
+import com.project.demo.dto.studentDTO.StudentLoginDTO;
+import com.project.demo.dto.studentDTO.StudentRegisterDTO;
+import com.project.demo.dto.studentDTO.StudentResponseDTO;
 
 import java.util.List;
 import java.util.Optional;
