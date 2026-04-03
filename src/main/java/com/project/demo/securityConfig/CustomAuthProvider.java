@@ -1,9 +1,7 @@
 package com.project.demo.securityConfig;
-
 import com.project.demo.entity.Student;
 import com.project.demo.repository.StudentRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,7 +19,6 @@ import java.util.Optional;
 @Component
 public class CustomAuthProvider implements AuthenticationProvider {
 
-    //Inyeccion de Dependencias por Constructor
     private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -32,29 +29,35 @@ public class CustomAuthProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication){
+        //Obtener datos
         String email = authentication.getName();
-        String rawPassword = authentication.getCredentials().toString();
+        String passwordRaw = authentication.getCredentials().toString();
 
-        Optional<Student> studentOptional = studentRepository.findByEmail(email);
-        if(studentOptional.isEmpty()){
-            log.warn("this student doesn't founded");
-            throw new BadCredentialsException("Student doesn't founded");
+        //Verificar email
+        Optional<Student> student = studentRepository.findByEmail(email);
+        if(student.isEmpty()){
+            log.error("Bad credentials");
+            throw new BadCredentialsException("Bad credentials");
         }
 
-        Student student = studentOptional.get();
-        if(!passwordEncoder.matches(rawPassword, student.getPassword())){
-            log.warn("Student password is incorrect");
-            throw new BadCredentialsException("This password is incorrect");
+        //Verificar Password
+        Student student1 = student.get();
+        if (!passwordEncoder.matches(passwordRaw,student1.getPassword() )){
+            log.error("Bad credentials");
+            throw new BadCredentialsException("Bad credentials");
         }
 
-        //Se crea una Lista Tipo GrantedAuthority para guardar las autoridades
+        //Crear lista de roles autorizados
         List<GrantedAuthority> authorities = new ArrayList<>();
-        //Se agrega una Autoirzacion simple e la lista con el role de estudiante
         authorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
 
-        return UsernamePasswordAuthenticationToken
-                .authenticated(email,null,authorities);
+        //retornar authenticacion
+        return UsernamePasswordAuthenticationToken.authenticated (
+                email,
+                null,
+                authorities);
     }
+
     @Override
     public boolean supports(Class<?> aClass){
         return UsernamePasswordAuthenticationToken.class
