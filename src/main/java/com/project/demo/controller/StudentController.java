@@ -1,5 +1,6 @@
 package com.project.demo.controller;
 
+import com.project.demo.dto.studentDTO.StudentUpdateDTO;
 import com.project.demo.entity.Student;
 import com.project.demo.service.StudentService;
 import com.project.demo.dto.studentDTO.StudentLoginDTO;
@@ -24,7 +25,7 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Student>> getStudent() {
+    public ResponseEntity<List<StudentResponseDTO>> getStudent() {
         try {
             return ResponseEntity.ok(studentService.getStudents());
         }catch (Exception e){
@@ -40,7 +41,7 @@ public class StudentController {
             return ResponseEntity.badRequest().build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Estudiante no encontrado: " + e.getMessage());
+                    .body("Student doesn't founded: " + e.getMessage());
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
@@ -56,11 +57,11 @@ public class StudentController {
             return ResponseEntity.internalServerError().build();
         }
     }
-    @PutMapping("/update_Student")
-    public ResponseEntity<Student> updateStudent(@Valid @RequestBody Student student){
+    @PutMapping("/update_Student/{id}")
+    public ResponseEntity<Student> updateStudent(@Valid @RequestBody StudentUpdateDTO studentUpdateDTO, @PathVariable Long id){
         try {
             return ResponseEntity.status(HttpStatus.ACCEPTED)
-                    .body(studentService.updateStudent(student));
+                    .body(studentService.updateStudent(studentUpdateDTO, id));
         }catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().build();
         }catch (Exception e){
