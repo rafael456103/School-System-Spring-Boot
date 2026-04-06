@@ -1,11 +1,13 @@
 package com.project.demo.service;
 
 
+import com.project.demo.dto.studentDTO.StudentUpdateDTO;
 import com.project.demo.entity.Student;
 import com.project.demo.repository.StudentRepository;
 import com.project.demo.dto.studentDTO.StudentLoginDTO;
 import com.project.demo.dto.studentDTO.StudentRegisterDTO;
 import com.project.demo.dto.studentDTO.StudentResponseDTO;
+import lombok.extern.java.Log;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +21,20 @@ public class StudentServiceImpl implements StudentService{
     final StudentRepository studentRepository;
     final PasswordEncoder passwordEncoder;
 
-    public StudentServiceImpl(StudentRepository studentRepository, PasswordEncoder passwordEncoder){
+    public StudentServiceImpl(StudentRepository studentRepository, PasswordEncoder passwordEncoder) {
         this.studentRepository = studentRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public List<Student> getStudents() {
-        return studentRepository.findAll();
+    public List<StudentResponseDTO> getStudents() {
+        return studentRepository.getStudents();
     }
 
     @Override
-    public Optional<Student> getStudent(Long id) {
-       return studentRepository.findById(id);
+    public Student getStudent(Long id) {
+       return studentRepository.findById(id)
+               .orElseThrow(() -> new RuntimeException("Student doesn't founded " + id));
     }
 
     @Override
@@ -40,8 +43,16 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
-    public Student updateStudent(Student student) {
-        return studentRepository.save(student);
+    public Student updateStudent(StudentUpdateDTO studentUpdateDTO, Long id) {
+
+        Student finded = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student doesn't founded"));
+
+        finded.setName(studentUpdateDTO.getName());
+        finded.setUniversity(studentUpdateDTO.getUniversity());
+        finded.setCourse(studentUpdateDTO.getCourse());
+        finded.setEmail(studentUpdateDTO.getEmail());
+
+        return studentRepository.save(finded);
     }
 
     @Override
