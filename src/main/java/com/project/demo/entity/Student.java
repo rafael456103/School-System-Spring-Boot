@@ -21,28 +21,28 @@ public class Student {
     @Column(unique = true)
     private Long id;
 
-    @NotBlank(message = "El nombre no es valido")
+    @NotBlank(message = "Name is not valid")
     @Size(min = 2, max = 60)
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @NotBlank(message = "Debe contener una contrasena de al menos 5 a 14 caracteres validos.")
-    @Column(name = "password", nullable = false)
+    @NotBlank(message = "Password must contain at least 5 to 60 valid characters")
     @Size(min = 5, max = 60)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @NotBlank(message = "Debes introducir tu universidad.")
+    @NotBlank(message = "University is required")
     @Size(max = 90)
     @Column(name = "university", nullable = false, length = 90)
     private String university;
 
+    @NotBlank(message = "Course is required")
     @Size(min = 7, max = 7)
-    @NotBlank(message = "Por favor introduce un curso.")
     @Column(nullable = false, name = "course", length = 7)
     private String course;
 
     @Email
-    @NotBlank
+    @NotBlank(message = "Email is required")
     @Size(min = 12, max = 100)
     @Column(name = "email", unique = true, nullable = false, length = 100)
     private String email;
