@@ -57,7 +57,7 @@ public class StudentController {
             return ResponseEntity.internalServerError().build();
         }
     }
-    @PutMapping("/update_Student/{id}")
+    @PatchMapping("/update_Student/{id}")
     public ResponseEntity<Student> updateStudent(@Valid @RequestBody StudentUpdateDTO studentUpdateDTO, @PathVariable Long id){
         try {
             return ResponseEntity.status(HttpStatus.ACCEPTED)
