@@ -19,6 +19,6 @@ services:
       db:
         condition: service_healthy
     environment:
-      SPRINGBOOT_DATASOURCE_URL: jdbc:mysql:db:8080/api/school_system
-      SPRINGBOOT_DATASOURCE_USERAME: root
-      SPRINGBOOT_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/school_system
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
