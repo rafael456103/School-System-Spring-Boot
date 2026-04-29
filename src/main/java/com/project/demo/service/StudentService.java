@@ -17,7 +17,7 @@ public interface StudentService {
     Student getStudent(Long id);
     Student saveStudent(Student student);
     void deleteStudent(Long id);
-    Optional<Student> findbyEmail(String email);
+    Optional<Student> findByEmail(String email);
 
     Student updateStudent(StudentUpdateDTO studentUpdateDTO, Long id);
     StudentResponseDTO registerDTO(StudentRegisterDTO studentRegisterDTO);
