@@ -61,7 +61,7 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
-    public Optional<Student> findbyEmail(String email) {
+    public Optional<Student> findByEmail(String email) {
         return studentRepository.findByEmail(email);
     }
 
