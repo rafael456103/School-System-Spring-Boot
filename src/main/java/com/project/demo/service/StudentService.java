@@ -12,12 +12,11 @@ import java.util.Optional;
 
 public interface StudentService {
 
-
     List<StudentResponseDTO> getStudents();
-    Student getStudent(Long id);
     Student saveStudent(Student student);
     void deleteStudent(Long id);
-    Optional<Student> findByEmail(String email);
+    Optional<Student> findStudentById(Long id);
+    Optional<Student> findStudentByEmail(String email);
 
     Student updateStudent(StudentUpdateDTO studentUpdateDTO, Long id);
     StudentResponseDTO registerDTO(StudentRegisterDTO studentRegisterDTO);
